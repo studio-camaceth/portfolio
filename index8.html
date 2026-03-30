@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAMACETH | Interiorismo & Diseño</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables de Color */
+        :root {
+            --bg-color: #F7F5F0;
+            --text-color: #2C2C2C;
+            --accent-color: #D4C5B9;
+            --white: #FFFFFF;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+
+        /* Reseteo básico */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-serif);
+            font-weight: 400;
+        }
+
+        /* Utilidades para Lazy-Loading Progresivo */
+        .lazy-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            will-change: opacity, transform;
+        }
+        .lazy-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .visible + .project-info .lazy-text {
+            transition-delay: 0.2s;
+        }
+
+        /* Navegación */
+        nav {
+            position: absolute;
+            top: 0; left: 0; width: 100%; z-index: 10;
+            padding: 2rem 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-img { max-height: 50px; width: auto; filter: invert(100%); }
+        nav a {
+            text-decoration: none; color: var(--white);
+            margin-left: 2rem; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+        nav a:hover { opacity: 0.7; }
+
+        /* Hero */
+        #hero {
+            min-height: 100vh; display: flex; align-items: center;
+            padding: 0 5vw; position: relative;
+            background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2000&auto=format&fit=crop'); 
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+        #hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); z-index: 1;
+        }
+        .hero-content {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            position: relative; z-index: 2; color: var(--white);
+        }
+        .hero-content h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.2; max-width: 800px; }
+
+        /* --- ACTUALIZADO: Títulos de Sección Prominentes y Consistentes --- */
+        .section-header {
+            margin-bottom: 5rem;
+            text-align: center;
+        }
+        .section-header h2 {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            color: var(--text-color);
+            letter-spacing: 2px;
+        }
+
+        /* --- ACTUALIZADO: Layout Asimétrico y Profesional de la sección "Acerca de mí" --- */
+        #about {
+            padding: 15vh 5vw; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+        .about-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr); /* Cuadrícula de 12 columnas */
+            gap: 4rem;
+            align-items: flex-start; /* Alineación superior */
+        }
+        .about-image {
+            grid-column: 1 / 6; /* Ocupa las columnas 1 a 5 */
+        }
+        .about-image img {
+            width: 100%;
+            /* Eliminamos corte circular y aspect-ratio cuadrado */
+            border-radius: 0;
+            aspect-ratio: 4/5; /* Rectángulo vertical para un look integrado */
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Sombra muy sutil */
+        }
+        .about-text {
+            grid-column: 7 / 13; /* Ocupa las columnas 7 a 12 */
+            margin-top: 5vh; /* Desfase asimétrico vertical */
+        }
+        .about-text p {
+            font-family: var(--font-serif); 
+            font-style: italic;
+            font-size: 1.2rem; 
+            color: #4a4a4a;
+            line-height: 1.8;
+        }
+
+        /* Layout del Portafolio */
+        #portfolio-section { padding: 5vh 5vw 10vh 5vw; max-width: 1200px; margin: 0 auto; }
+        .portfolio-grid { display: flex; flex-direction: column; gap: 8vh; }
+
+        .portfolio-item {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .portfolio-item:nth-child(even) {
+            grid-template-columns: 5fr 7fr;
+        }
+        .portfolio-item:nth-child(even) .image-wrapper { grid-column: 2; }
+        .portfolio-item:nth-child(even) .project-info { grid-column: 1; grid-row: 1; text-align: right; }
+
+        .image-wrapper { overflow: hidden; width: 100%; background-color: #eee; }
+        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; display: block; }
+        .portfolio-item:hover .image-wrapper img { transform: scale(1.03); }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .project-info h3 { font-size: 1.5rem; color: var(--text-color); }
+        .project-desc { font-family: var(--font-serif); font-style: italic; font-size: 1.2rem; color: #4a4a4a; }
+        .additional-details { font-size: 0.95rem; color: #555; }
+
+        /* Botón Conoce Más y Galería Expansible */
+        .btn-expand {
+            background: none; border: none; border-bottom: 1px solid var(--accent-color);
+            padding: 0 0 5px 0; font-family: var(--font-sans); font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px; color: var(--text-color);
+            cursor: pointer; transition: border-color 0.3s, color 0.3s;
+            margin-top: 1rem; align-self: flex-start;
+        }
+        .portfolio-item:nth-child(even) .btn-expand { align-self: flex-end; }
+        .btn-expand:hover { color: #000; border-bottom-color: #000; }
+
+        .expanded-gallery {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.8s ease, opacity 0.8s ease, margin-top 0.8s ease;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+        }
+        .expanded-gallery.open { max-height: 1000px; opacity: 1; margin-top: 1.5rem; }
+        .expanded-gallery img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
+        /* --- ACTUALIZADO: Contacto (Título reducido, tipografía Serif) --- */
+        #contact { padding: 15vh 5vw; max-width: 800px; margin: 0 auto; text-align: center; }
+        #contact h2 { 
+            font-family: var(--font-serif);
+            font-size: 2rem; /* Tamaño de fuente reducido */
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: var(--text-color);
+            margin-bottom: 2.5rem; 
+        }
+        form { display: flex; flex-direction: column; gap: 2rem; text-align: left; }
+        .input-group { display: flex; flex-direction: column; }
+        input, textarea { background: transparent; border: none; border-bottom: 1px solid var(--accent-color); padding: 10px 0; font-family: var(--font-sans); font-size: 1rem; color: var(--text-color); outline: none; transition: border-color 0.3s; }
+        input:focus, textarea:focus { border-bottom-color: var(--text-color); }
+        textarea { resize: vertical; min-height: 100px; }
+        button[type="submit"] { background-color: var(--text-color); color: var(--white); border: none; padding: 15px 30px; font-family: var(--font-sans); font-size: 1rem; letter-spacing: 1px; cursor: pointer; align-self: flex-start; transition: background-color 0.3s; }
+        button[type="submit"]:hover { background-color: var(--accent-color); color: var(--text-color); }
+
+        /* Footer */
+        footer { background-color: #EFECE6; padding: 5rem 5vw 2rem 5vw; }
+        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; max-width: 1200px; margin: 0 auto; border-bottom: 1px solid var(--accent-color); padding-bottom: 3rem; margin-bottom: 2rem; }
+        .footer-info h4 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer-info p, .footer-info a { color: #555; text-decoration: none; font-size: 0.95rem; display: block; margin-bottom: 0.5rem; transition: color 0.3s; }
+        .footer-info a:hover { color: var(--text-color); }
+        .social-links { display: flex; gap: 2rem; }
+        .social-links a { text-decoration: none; color: var(--text-color); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; transition: color 0.3s; }
+        .social-links a:hover { color: var(--accent-color); }
+        .copyright { text-align: center; font-size: 0.8rem; color: #888; }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 1rem; padding: 1rem 5vw; }
+            .logo-img { max-height: 40px; }
+            nav a { margin-left: 0; margin: 0 10px; font-size: 0.8rem; }
+            
+            /* Ajustes responsivos para About */
+            .about-container { grid-template-columns: 1fr; gap: 2rem; text-align: left; }
+            .about-image, .about-text { grid-column: 1; }
+            .about-image img { aspect-ratio: auto; }
+            .about-text { margin-top: 0; }
+            
+            .portfolio-item, .portfolio-item:nth-child(even) { grid-template-columns: 1fr; gap: 2rem; }
+            .portfolio-item:nth-child(even) .image-wrapper { grid-column: 1; }
+            .portfolio-item:nth-child(even) .project-info { grid-column: 1; text-align: left; align-items: flex-start; }
+            .expanded-gallery { grid-template-columns: 1fr; }
+            .btn-expand, .portfolio-item:nth-child(even) .btn-expand { align-self: flex-start; }
+            .hero-content h1, .section-header h2 { font-size: 2.2rem; }
+            #contact h2 { font-size: 1.7rem; }
+            .footer-content { flex-direction: column; gap: 2rem; text-align: center; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <img src="logo_camaceth.png" alt="CAMACETH Logo" class="logo-img">
+        </div>
+        <div>
+            <a href="#about">Enfoque</a>
+            <a href="#portfolio-section">Proyectos</a>
+            <a href="#contact">Contacto</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content lazy-item">
+                <h1>Diseño que respira.<br><em>El equilibrio perfecto entre estética, practicidad y tu esencia.</em></h1>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="section-header lazy-item">
+            </div>
+            <div class="about-container">
+                <div class="about-image lazy-item">
+                    <img src="image_5bde5c.png" alt="Retrato Diseñadora CAMACETH" loading="lazy">
+                </div>
+                <div class="about-text">
+                    <p class="lazy-item">Soy diseñadora de interiores con enfoque en espacios funcionales, armoniosos y estéticamente equilibrados. Me interesa crear ambientes que mejoren la calidad de vida de las personas, combinando diseño, practicidad y detalles personalizados. Mi trayectoria incluye diversos proyectos residenciales y comerciales en Monterrey, donde he tenido la oportunidad de perfeccionar mi visión de un diseño interior táctil y sereno.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio-section">
+            <div class="section-header lazy-item">
+                <h2>Proyectos</h2>
+            </div>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="image-wrapper lazy-item">
+                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1600&auto=format&fit=crop" alt="Residencia Alba" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="lazy-text">Residencia Alba</h3>
+                        <p class="project-desc lazy-text">Inspiración centrada en maximizar la luz natural.</p>
+                        <button class="btn-expand lazy-text" onclick="toggleGallery('gallery-1', this)">Conoce más</button>
+                        
+                        <div id="gallery-1" class="expanded-gallery">
+                            <p class="additional-details">Uso extensivo de maderas claras y lino para generar una atmósfera de calma.</p>
+                            <img src="https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?q=80&w=600&auto=format&fit=crop" alt="Detalle 1" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1582582621959-48d27397dc69?q=80&w=600&auto=format&fit=crop" alt="Detalle 2" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <div class="image-wrapper lazy-item">
+                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop" alt="Refugio Táctil" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="lazy-text">Refugio Táctil</h3>
+                        <p class="project-desc lazy-text">Minimalismo cálido. Un refugio donde la materialidad es protagonista.</p>
+                        <button class="btn-expand lazy-text" onclick="toggleGallery('gallery-2', this)">Conoce más</button>
+                        
+                        <div id="gallery-2" class="expanded-gallery">
+                            <p class="additional-details">Un enfoque en el contraste sutil entre superficies lisas y textiles orgánicos.</p>
+                            <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=600&auto=format&fit=crop" alt="Detalle 1" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1616137466211-f939a420be84?q=80&w=600&auto=format&fit=crop" alt="Detalle 2" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <div class="image-wrapper lazy-item">
+                        <img src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=1000&auto=format&fit=crop" alt="Espacio Sereno" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="lazy-text">Espacio Sereno</h3>
+                        <p class="project-desc lazy-text">Equilibrio y neutralidad. Un espacio para que el entorno respire.</p>
+                        <button class="btn-expand lazy-text" onclick="toggleGallery('gallery-3', this)">Conoce más</button>
+                        
+                        <div id="gallery-3" class="expanded-gallery">
+                            <p class="additional-details">Una cuidada paleta de tonos arena y hueso para una calma absoluta.</p>
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600&auto=format&fit=crop" alt="Detalle 1" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?q=80&w=600&auto=format&fit=crop" alt="Detalle 2" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="lazy-item">
+            <h2>Hablemos de tu espacio</h2>
+            <form action="#" method="POST">
+                <div class="input-group">
+                    <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required>
+                </div>
+                <div class="input-group">
+                    <textarea id="message" name="message" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
+                </div>
+                <button type="submit">Enviar Mensaje</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content lazy-item">
+            <div class="footer-info">
+                <h4>CAMACETH</h4>
+                <a href="mailto:hola@camaceth.com">hola@camaceth.com</a>
+                <p>Estudio de Diseño de Interiores</p>
+            </div>
+            <div class="social-links">
+                <a href="https://instagram.com/camaceth" target="_blank">Instagram</a>
+                <a href="https://pinterest.com/camaceth" target="_blank">Pinterest</a>
+                <a href="https://linkedin.com/company/camaceth" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 CAMACETH.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lazyItems = document.querySelectorAll('.lazy-item, .lazy-text');
+            
+            const appearOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                });
+            }, appearOptions);
+
+            lazyItems.forEach(item => {
+                appearOnScroll.observe(item);
+            });
+        });
+
+        function toggleGallery(galleryId, buttonElement) {
+            const gallery = document.getElementById(galleryId);
+            
+            if (gallery.classList.contains('open')) {
+                gallery.classList.remove('open');
+                buttonElement.innerText = "Conoce más";
+            } else {
+                gallery.classList.add('open');
+                buttonElement.innerText = "Ver menos";
+            }
+        }
+    </script>
+</body>
+</html>
